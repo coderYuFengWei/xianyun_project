@@ -1,6 +1,6 @@
 <template>
   <div>
-    123
+      机票首页
   </div>
 </template>
 

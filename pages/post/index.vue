@@ -1,6 +1,6 @@
 <template>
   <div>
-    123
+      post首页
   </div>
 </template>
 
