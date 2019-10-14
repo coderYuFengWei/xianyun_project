@@ -48,7 +48,11 @@ export default {
    */
   plugins: [
     '@/plugins/element-ui',
-    {src:"@/plugins/localStorage",ssr:false}
+    '@/plugins/axios', //调用插件
+    {
+      src: "@/plugins/localStorage",
+      ssr: false
+    }
   ],
   /*
    ** Nuxt.js dev-modules
