@@ -4,7 +4,7 @@
             <!-- 顶部过滤列表 -->
             <div class="flights-content">
                 <!-- 过滤条件 -->
-                <FlightsFilters :data="flightsData" />
+                <FlightsFilters :data="cacheFlightsData" @setDataList="setDataList" />
 
                 <!-- 航班头部布局 -->
                 <FlightsListHead />
@@ -53,6 +53,11 @@ export default {
                 info: {},
                 options: {}
             },
+            cacheFlightsData: {
+                flights: [],
+                info: {},
+                options: {}
+            },
             datalist: [],
             pageIndex: 1,
             pageSize: 5
@@ -72,12 +77,19 @@ export default {
             }).then(res => {
                 this.flightsData = res.data;
                 // this.datalist = this.flightsData.flights;
+                console.log(res);
+                this.cacheFlightsData = { ...res.data };
                 this.setDataList();
             });
         },
 
         //设置dataList的数据
-        setDataList() {
+        setDataList(arr) {
+            if (arr) {
+                this.pageIndex = 1;
+                this.flightsData.flights = arr;
+                this.flightsData.total = arr.length;
+            }
             const start = (this.pageIndex - 1) * this.pageSize;
             const end = start + this.pageSize;
             this.datalist = this.flightsData.flights.slice(start, end);
