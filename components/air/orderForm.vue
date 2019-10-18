@@ -172,7 +172,6 @@ export default {
         air: this.data.id
       };
 
-      console.log(orderData);
       const {
         user: { userInfo }
       } = this.$store.state;
@@ -183,19 +182,24 @@ export default {
 
       this.$axios({
         url: `/airorders`,
-        mehtod: "POST",
+        method: "POST",
         data: orderData,
         headers: {
           Authorization: `Bearer ${userInfo.token || "NO TOKEN"}`
         }
       })
         .then(res => {
+          const { data, message } = res.data;
+          this.$message.success(message);
           this.$router.push({
-            path: "/air/pay"
+            path: "/air/pay",
+            query: {
+              id: data.id
+            }
           });
         })
         .catch(err => {
-          const { messaage } = err.response.data;
+          const { message } = err.response.data;
           this.$confirm(message, "提示", {
             confirmButtonText: "确定",
             showCancelButton: false,
