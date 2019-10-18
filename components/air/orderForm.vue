@@ -62,6 +62,9 @@
         </el-form>
         <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
       </div>
+
+      <!-- 调用总价格，让computed会执行 -->
+      <span v-show="false">{{allPrice}}</span>
     </div>
   </div>
 </template>
@@ -82,8 +85,8 @@ export default {
           id: ""
         }
       ],
-
-      insurance: [],
+      detail: {},
+      insurances: [],
       contactName: "",
       contactPhone: "",
       captcha: "000000",
@@ -104,12 +107,12 @@ export default {
 
     //选择保险
     hanldeInsurance(id) {
-      if (this.insurance.indexOf(id) > -1) {
-        let arr = this.insurance.slice(0);
-        arr.splice(this.insurance.indexOf(id), 1);
-        this.insurance = arr;
+      if (this.insurances.indexOf(id) > -1) {
+        let arr = this.insurances.slice(0);
+        arr.splice(this.insurances.indexOf(id), 1);
+        this.insurances = arr;
       } else {
-        this.insurance = [...new Set([...this.insurance, id])];
+        this.insurances = [...new Set([...this.insurances, id])];
       }
     },
 
@@ -200,6 +203,38 @@ export default {
           });
         });
     }
+  },
+
+  computed: {
+    allPrice() {
+      if (!this.detail.seat_infos) return;
+      let price = 0;
+      (price += this.detail.seat_infos.org_settle_price),
+        // 燃油费
+        (price += this.detail.airport_tax_audlet);
+      // 保险
+      price += this.insurances.length * 30;
+      // 人数
+      price *= this.users.length;
+
+      // 把总价格传递给父组件
+      this.$emit("getAllPrice", price);
+
+      return price;
+    }
+  },
+
+  mounted() {
+    const { id, seat_xid } = this.$route.query;
+    this.$axios({
+      url: "/airs/" + id,
+      params: {
+        seat_xid
+      }
+    }).then(res => {
+      this.detail = res.data;
+      this.$emit("getDetail", this.detail);
+    });
   }
 };
 </script>

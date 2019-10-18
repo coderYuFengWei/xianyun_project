@@ -1,26 +1,31 @@
 <template>
   <div class="container">
+    <input type="hidden" :value="allPrice" />
     <el-row type="flex" justify="space-between">
       <!-- 订单表单 -->
-      <OrderForm :data="infoData" />
+      <OrderForm :data="detail" @getDetail="getDetail" @getAllPrice="getAllPrice" />
 
       <!-- 侧边栏 -->
-      <div class="aside"></div>
+      <OrderAside :data="detail" :allPrice="allPrice" />
     </el-row>
   </div>
 </template>
 
 <script>
 import OrderForm from "@/components/air/orderForm";
+import OrderAside from "@/components/air/orderAside";
 export default {
   components: {
-    OrderForm
+    OrderForm,
+    OrderAside
   },
   data() {
     return {
-      infoData: {
+      detail: {
+        seat_infos: {},
         insurances: []
-      }
+      },
+      allPrice: 0
     };
   },
 
@@ -32,8 +37,18 @@ export default {
         seat_xid: query.seat_xid
       }
     }).then(res => {
-      this.infoData = res.data;
+      this.detail = res.data;
     });
+  },
+
+  methods: {
+    getDetail(detail) {
+      this.detail = detail;
+    },
+
+    getAllPrice(price) {
+      this.allPrice = price;
+    }
   }
 };
 </script>
