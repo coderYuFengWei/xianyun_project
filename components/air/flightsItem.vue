@@ -61,6 +61,7 @@
     </div>
 </template>
 <script>
+import { computedTime } from "@/utils/dec_time";
 export default {
     props: {
         // 数据
@@ -77,17 +78,7 @@ export default {
     },
     computed: {
         rankTime() {
-            const arrive = this.data.arr_time.split(":");
-            const depart = this.data.dep_time.split(":");
-            const arrVal = arrive[0] * 60 + +arrive[1];
-            const depVal = depart[0] * 60 + +depart[1];
-            let dis = arrVal - depVal;
-
-            if (dis < 0) {
-                dis = arrVal + 24 * 60 - depVal;
-            }
-
-            return `${Math.floor(dis / 60)}时${dis % 60}分`;
+            return computedTime(this.data.arr_time, this.data.dep_time);
         }
     },
     methods: {

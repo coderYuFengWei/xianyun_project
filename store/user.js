@@ -24,18 +24,29 @@ export const mutations = {
 
 //异步数据
 export const actions = {
-  login({
-    commit
-  }, data) {
+  login(store, data) {
     return this.$axios({
       url: "/accounts/login",
       method: "POST",
-      data: data
+      data
     }).then(res => {
       const data = res.data;
-      commit("setUserInfo", data);
+      store.commit("setUserInfo", data);
       return data;
     })
 
+  },
+
+  //发送验证码
+  async sendCapcha(store, tel) {
+    const res = await this.$axios({
+      url: "/captchas",
+      method: "POST",
+      data: {
+        tel
+      }
+    });
+
+    return res;
   }
 };

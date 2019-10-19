@@ -91,39 +91,17 @@ export default {
   },
   methods: {
     // 发送验证码
-    handleSendCaptcha() {
+    async handleSendCaptcha() {
       if (!this.form.username) {
-        this.$confirm("手机号码不能为空", "提示", {
-          confirmButtonText: "确定",
-          showCancelButton: false,
-          type: "warnning"
-        });
+        this.$message.error("手机号码不能为空");
         return;
       }
 
-      if ((this.form.username.length !== 11)) {
-        this.$confirm("手机号码格式错误", "提示", {
-          confirmButtonText: "确定",
-          showCancelButton: false,
-          type: "warning"
-        });
-        return;
-      }
-
-      this.$axios({
-        url: "/captchas",
-        method: "POST",
-        data: {
-          tel: this.form.username
-        }
-      }).then(res => {
-        const { code } = res.data;
-        this.$confirm(`模拟手机验证码为:${code}`, "提示", {
-          confirmButtonText: "确定",
-          showCancelButton: false,
-          type: "warning"
-        });
-      });
+      const res = await this.$store.dispatch(
+        "user/sendCapcha",
+        this.form.username
+      );
+      this.$message.success(`当前手机验证码：` + res.data.code);
     },
 
     // 注册
